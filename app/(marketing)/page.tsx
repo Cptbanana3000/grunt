@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import CompressDemo from '@/components/CompressDemo'
 
 export default async function LandingPage() {
   const supabase = createServerSupabaseClient()
@@ -64,56 +65,67 @@ export default async function LandingPage() {
         </div>
       </nav>
 
-      <div style={{ maxWidth: '640px', width: '100%', textAlign: 'center', marginTop: '4rem' }}>
-        <div style={{
-          display: 'inline-block',
-          fontSize: '11px', letterSpacing: '0.15em', textTransform: 'uppercase',
-          color: 'var(--stone-dim)', marginBottom: '1.5rem',
-          padding: '4px 12px', border: '1px solid var(--border)',
-          borderRadius: '20px',
-        }}>
-          prompt compression utility
+      {/* Hero Section */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: '1fr 1.3fr', 
+        gap: '4rem', 
+        maxWidth: '1200px', 
+        width: '100%', 
+        marginTop: '6rem',
+        alignItems: 'center'
+      }}>
+        <div style={{ textAlign: 'left' }}>
+          <div style={{
+            fontSize: '11px', letterSpacing: '0.15em', textTransform: 'uppercase',
+            color: 'var(--stone-dim)', marginBottom: '2.5rem',
+            fontWeight: 500
+          }}>
+            PROMPT COMPRESSION • GGRR.SH
+          </div>
+
+          <h1 style={{
+            fontFamily: 'var(--serif)', fontSize: 'clamp(48px, 6vw, 84px)',
+            lineHeight: 1, marginBottom: '2rem',
+            color: 'var(--text)',
+            letterSpacing: '-0.02em'
+          }}>
+            big prompt bad.<br />
+            <em style={{ color: 'var(--stone)' }}>small prompt good.</em>
+          </h1>
+
+          <p style={{
+            fontSize: '15px', lineHeight: 1.7,
+            color: 'var(--text-dim)', marginBottom: '3rem',
+            maxWidth: '420px',
+          }}>
+            grunt rewrites bloated prompts into the smallest<br/>
+            fragment that<br/>
+            still means the same thing. <span style={{color: 'var(--green)'}}>40-60% fewer tokens,</span><br/>
+            zero<br/>
+            loss of technical meaning.
+          </p>
+
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+            <Link href="/sign-up" style={{
+              fontSize: '14px', fontWeight: 500,
+              padding: '14px 28px',
+              background: 'var(--stone)',
+              color: 'var(--bg)',
+              borderRadius: 'var(--radius)',
+              transition: 'opacity 0.15s',
+            }}>
+              paste your prompt →
+            </Link>
+          </div>
         </div>
 
-        <h1 style={{
-          fontFamily: 'var(--serif)', fontSize: 'clamp(42px, 8vw, 72px)',
-          lineHeight: 1.05, marginBottom: '1.5rem',
-          color: 'var(--text)',
-        }}>
-          why use many token<br />
-          <em style={{ color: 'var(--stone)' }}>when few token do trick?</em>
-        </h1>
-
-        <p style={{
-          fontSize: '15px', lineHeight: 1.7,
-          color: 'var(--text-dim)', marginBottom: '2.5rem',
-          maxWidth: '480px', margin: '0 auto 2.5rem',
-        }}>
-          Paste a verbose prompt. Get a compressed fragment. Save 40–60% on tokens
-          without losing a single bit of technical meaning.
-        </p>
-
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/sign-up" style={{
-            fontSize: '14px', fontWeight: 500,
-            padding: '12px 28px',
-            background: 'var(--stone)',
-            color: 'var(--bg)',
-            borderRadius: 'var(--radius)',
-            transition: 'opacity 0.15s',
-          }}>
-            start compressing — free
-          </Link>
-          <Link href="#how" style={{
-            fontSize: '14px',
-            padding: '12px 28px',
-            border: '1px solid var(--border2)',
-            color: 'var(--text-dim)',
-            borderRadius: 'var(--radius)',
-          }}>
-            how it works
-          </Link>
+        <div style={{ position: 'relative', width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+          <CompressDemo />
         </div>
+      </div>
+
+      <div style={{ maxWidth: '640px', width: '100%', textAlign: 'center' }}>
 
         {/* Stats row */}
         <div style={{

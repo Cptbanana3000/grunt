@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0e0d0b;
+  --bg2: #161410;
+  --bg3: #1e1b17;
+  --border: #2a2620;
+  --border2: #3a3630;
+  --stone: #c4a96a;
+  --stone-dim: #8a7548;
+  --text: #e8e0d0;
+  --text-dim: #9a9080;
+  --text-faint: #5a5448;
+  --green: #5a9e6f;
+  --red: #9e5a5a;
+  --mono: 'DM Mono', monospace;
+  --serif: 'Instrument Serif', serif;
+  --radius: 6px;
+  --radius-lg: 10px;
+}
+
+html { font-size: 16px; }
+body { background: var(--bg); color: var(--text); font-family: var(--mono); -webkit-font-smoothing: antialiased; }
+
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; font-family: var(--mono); }
+textarea, input { font-family: var(--mono); }
+
+::selection { background: var(--stone); color: var(--bg); }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }

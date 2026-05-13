@@ -33,13 +33,13 @@ export default function UpgradePage() {
               go pro. compress more.
             </h1>
             <p className="font-sans text-zinc-400 text-sm">
-              unlock unlimited compressions, wenyan mode, and the context shrinker.
+              unlock unlimited compressions and wenyan mode.
             </p>
           </div>
 
           <div className="border border-white rounded-xl p-8 mb-6">
             <div className="flex items-baseline gap-2 mb-6">
-              <span className="font-serif text-5xl font-semibold">$9</span>
+              <span className="font-serif text-5xl font-semibold">$5</span>
               <span className="font-sans text-zinc-400">/month</span>
             </div>
 
@@ -48,7 +48,6 @@ export default function UpgradePage() {
                 "Unlimited compressions",
                 "All compression levels",
                 "Wenyan classical Chinese mode 🤯",
-                "Context shrinker (compress README/CLAUDE.md)",
                 "Compression history & stats",
                 "Priority support",
               ].map((text) => (

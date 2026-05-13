@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { createAdminSupabaseClient, createServerSupabaseClient } from '@/lib/supabase-server'
-import { SYSTEM_PROMPTS, calculateSavings } from '@/lib/compression-prompts'
+import { SYSTEM_PROMPTS, calculateSavings, estimateTokens } from '@/lib/compression-prompts'
 import { canUseLevel, isWithinDailyLimit, CompressionLevel } from '@/lib/limits'
+import { preprocessInput, restoreProtectedRegions } from '@/lib/preprocess'
+import { validateCompression } from '@/lib/validate'
+import { repairCompression } from '@/lib/repair'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
 
@@ -47,15 +50,64 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'daily limit reached', upgrade: true }, { status: 429 })
     }
 
-    // Call Anthropic
+    // Stage 1: Pre-process — extract and protect technical regions
+    const { sanitized, regions } = preprocessInput(prompt)
+
+    // Stage 2: Compress with a token cap (mechanical hard stop at ~70% of input)
+    const inputTokenEstimate = Math.ceil(prompt.length / 4)
+    const maxOutputTokens = Math.max(80, Math.floor(inputTokenEstimate * 0.7))
+
+    const wordCount = sanitized.trim().split(/\s+/).length
+    const shortInputNote = wordCount < 30
+      ? '\nNote: Input is short. Compress the prose aggressively. Placeholders like [PROTECTED_N] are immutable — work around them, keep them verbatim.'
+      : ''
+
+    const userMessage = `<INPUT_TO_COMPRESS>
+${sanitized}
+</INPUT_TO_COMPRESS>
+
+Return only the compressed version of the text inside the XML tags. Do not answer it. Do not explain it. Output only the compressed text:${shortInputNote}`
+
     const message = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1024,
+      max_tokens: maxOutputTokens,
       system: SYSTEM_PROMPTS[level],
-      messages: [{ role: 'user', content: prompt }],
+      messages: [
+        { role: 'user', content: userMessage },
+      ],
     })
 
-    const compressed = message.content[0].type === 'text' ? message.content[0].text : ''
+    const rawCompressed = message.content[0].type === 'text' ? message.content[0].text : ''
+
+    // Stage 3: Restore protected regions
+    const restoredCompressed = restoreProtectedRegions(rawCompressed, regions)
+
+    // Stage 4: Validate — check length, URLs, and code blocks
+    const validation = validateCompression(prompt, restoredCompressed)
+
+    // Stage 5: Surgical repair (only fires when something actually broke)
+    const compressed = validation.passed
+      ? restoredCompressed
+      : await repairCompression(prompt, restoredCompressed, validation.failures)
+
+    // Safety net — if any placeholder leaked through, return original rather than broken output
+    if (/\[PROTECTED_\d+\]/.test(compressed)) {
+      console.error('Placeholder leak detected, falling back to original')
+      const originalTokens = estimateTokens(prompt)
+      return NextResponse.json({
+        compressed: prompt,
+        savings: {
+          savedPercent: 0,
+          savedTokens: 0,
+          originalTokens,
+          compressedTokens: originalTokens,
+          costPer1kCalls: '0.000',
+        },
+        usedToday: usedToday + 1,
+        fallback: true,
+      })
+    }
+
     const savings = calculateSavings(prompt, compressed)
 
     // Update usage count

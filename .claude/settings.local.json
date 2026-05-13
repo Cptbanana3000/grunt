@@ -8,7 +8,12 @@
       "Bash(git commit -m ' *)",
       "Bash(git remote *)",
       "Bash(git branch *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(Get-ChildItem -Path \"d:\\\\Projects\\\\grunt\" -Directory -Exclude node_modules,dist,.next,build,out)",
+      "Bash(find /d:/Projects/grunt -type f \\\\\\( -name \"middleware.*\" -o -name \"layout.*\" \\\\\\) | grep -v node_modules | head -20)",
+      "Read(//d:/Projects/**)",
+      "Bash(git grep *)",
+      "Bash(git -C d:\\\\Projects\\\\grunt grep -i \"gggr\")"
     ]
   }
 }

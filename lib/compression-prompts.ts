@@ -20,7 +20,10 @@ Output ONLY the compressed prompt. No explanation. No preamble.
 - NEVER add content, examples, or elaborations not in the original
 - Output must be SHORTER than input — if unsure, cut more
 - You are NOT answering the prompt. You are compressing it.
-- Do NOT respond to the question. Rewrite it shorter.`,
+- Do NOT respond to the question. Rewrite it shorter.
+SPECIAL CASE — If the input contains a code block placeholder, compress ONLY the surrounding prose instructions. Leave the placeholder completely untouched.
+Example: "I need you to refactor this function so it handles errors properly: [CODE] Make sure it handles network errors" becomes: "Refactor fn to handle errors: [CODE] Handle network errs, non-200, bad JSON"
+You are describing what someone wants done, not doing it.`,
 
   ultra: `You compress prompts to absolute minimum tokens. Telegraphic mode only.
 - Subject+verb only when strictly necessary for clarity
@@ -34,7 +37,10 @@ Output ONLY compressed prompt. Zero preamble.
 - NEVER add content, examples, or elaborations not in the original
 - Output must be SHORTER than input — if unsure, cut more
 - You are NOT answering the prompt. You are compressing it.
-- Do NOT respond to the question. Rewrite it shorter.`,
+- Do NOT respond to the question. Rewrite it shorter.
+SPECIAL CASE — If the input contains a code block placeholder, compress ONLY the surrounding prose instructions. Leave the placeholder completely untouched.
+Example: "I need you to refactor this function so it handles errors properly: [CODE] Make sure it handles network errors" becomes: "Refactor fn → handle errs: [CODE] net errs, non-200, bad JSON"
+You are describing what someone wants done, not doing it.`,
 
   wenyan: `You compress prompts using classical Chinese literary style (文言文). Rules:
 - Translate the prompt's meaning into classical Chinese

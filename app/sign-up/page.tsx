@@ -36,15 +36,15 @@ export default function SignUp() {
     <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
       <div style={{ width: '100%', maxWidth: '380px' }}>
         <Link href="/" style={{ fontFamily: 'var(--serif)', fontSize: '18px', color: 'var(--stone)', display: 'block', marginBottom: '2rem' }}>🪨 grunt</Link>
-        <h1 style={{ fontFamily: 'var(--serif)', fontSize: '28px', marginBottom: '4px' }}>make cave</h1>
+        <h1 style={{ fontFamily: 'var(--serif)', fontSize: '28px', marginBottom: '4px' }}>join grunt</h1>
         <p style={{ fontSize: '12px', color: 'var(--text-faint)', marginBottom: '2rem' }}>free. 10 compressions/day.</p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <input placeholder="email" type="email" value={email} onChange={e => setEmail(e.target.value)} style={inputStyle} />
           <input placeholder="password" type="password" value={password} onChange={e => setPassword(e.target.value)} style={inputStyle} onKeyDown={e => e.key === 'Enter' && handleSignUp()} />
           {error && <p style={{ fontSize: '12px', color: 'var(--red)' }}>{error}</p>}
-          <button onClick={handleSignUp} disabled={loading} style={btnStyle}>{loading ? 'carving...' : 'carve cave →'}</button>
+          <button onClick={handleSignUp} disabled={loading} style={btnStyle}>{loading ? 'grunting...' : 'grunt up →'}</button>
           <p style={{ fontSize: '12px', color: 'var(--text-faint)', textAlign: 'center' }}>
-            have cave? <Link href="/sign-in" style={{ color: 'var(--stone-dim)' }}>enter</Link>
+            have account? <Link href="/sign-in" style={{ color: 'var(--stone-dim)' }}>grunt in</Link>
           </p>
         </div>
       </div>

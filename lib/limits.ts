@@ -9,7 +9,7 @@ export const PLANS = {
     name: 'Pro',
     dailyCompressions: Infinity,
     levels: ['lite', 'full', 'ultra', 'wenyan'] as const,
-    price: 9,
+    price: 5,
   },
 }
 

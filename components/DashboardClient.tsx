@@ -61,6 +61,7 @@ export default function DashboardClient({ user, profile, history: initialHistory
 
   async function signOut() {
     await supabase.auth.signOut()
+    router.refresh()
     router.push('/')
   }
 

@@ -23,9 +23,9 @@ export default function SignIn() {
     <input placeholder="email" type="email" value={email} onChange={e => setEmail(e.target.value)} style={inputStyle} />
     <input placeholder="password" type="password" value={password} onChange={e => setPassword(e.target.value)} style={inputStyle} onKeyDown={e => e.key === 'Enter' && handleSignIn()} />
     {error && <p style={{ fontSize: '12px', color: 'var(--red)' }}>{error}</p>}
-    <button onClick={handleSignIn} disabled={loading} style={btnStyle}>{loading ? 'entering cave...' : 'enter cave →'}</button>
+    <button onClick={handleSignIn} disabled={loading} style={btnStyle}>{loading ? 'grunting...' : 'grunt in →'}</button>
     <p style={{ fontSize: '12px', color: 'var(--text-faint)', textAlign: 'center' }}>
-      no cave yet? <Link href="/sign-up" style={{ color: 'var(--stone-dim)' }}>make cave</Link>
+      new here? <Link href="/sign-up" style={{ color: 'var(--stone-dim)' }}>grunt up</Link>
     </p>
   </AuthLayout>
 }

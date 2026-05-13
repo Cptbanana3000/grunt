@@ -81,7 +81,7 @@ export default async function LandingPage() {
             color: 'var(--stone-dim)', marginBottom: '2.5rem',
             fontWeight: 500
           }}>
-            PROMPT COMPRESSION • GGRR.SH
+            PROMPT COMPRESSION
           </div>
 
           <h1 style={{
@@ -184,8 +184,8 @@ export default async function LandingPage() {
                 cta: 'get started', href: '/sign-up', highlight: false,
               },
               {
-                name: 'Pro', price: '$9', sub: 'per month',
-                features: ['unlimited compressions', 'all 4 levels incl. wenyan', 'prompt history library', 'context shrinker (coming soon)'],
+                name: 'Pro', price: '$5', sub: 'per month',
+                features: ['unlimited compressions', 'all 4 levels incl. wenyan', 'prompt history library'],
                 cta: 'upgrade to pro', href: '/sign-up', highlight: true,
               },
             ].map((plan) => (

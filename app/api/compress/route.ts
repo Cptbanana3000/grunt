@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     const admin = createAdminSupabaseClient()
     const { data: profile } = await admin
       .from('profiles')
-      .select('plan, daily_compressions, last_compression_date')
+      .select('plan, daily_compressions, last_compression_date, total_compressions')
       .eq('id', user.id)
       .single()
 
@@ -114,7 +114,7 @@ Return only the compressed version of the text inside the XML tags. Do not answe
     await admin.from('profiles').update({
       daily_compressions: usedToday + 1,
       last_compression_date: today,
-      total_compressions: (profile as any).total_compressions + 1,
+      total_compressions: (profile.total_compressions ?? 0) + 1,
     }).eq('id', user.id)
 
     // Save to history
@@ -127,7 +127,7 @@ Return only the compressed version of the text inside the XML tags. Do not answe
       saved_tokens: savings.savedTokens,
     })
 
-    return NextResponse.json({ compressed, savings, usedToday: usedToday + 1 })
+    return NextResponse.json({ compressed, savings, usedToday: usedToday + 1, totalCompressions: (profile.total_compressions ?? 0) + 1 })
 
   } catch (e: any) {
     console.error(e)

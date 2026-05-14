@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import logo from "@/app/icon1.png";
 
 export default function UpgradePage() {
   const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ export default function UpgradePage() {
     <div className="min-h-screen bg-stone-950 text-white flex flex-col">
       <nav className="border-b border-white/5 px-6 py-3">
         <Link href="/dashboard" className="flex items-center gap-2 w-fit">
-          <span>🪨</span>
+          <Image src={logo} alt="grunt" width={22} height={22} style={{ borderRadius: '3px', imageRendering: 'pixelated' }} />
           <span className="font-mono text-sm font-bold">grunt</span>
         </Link>
       </nav>

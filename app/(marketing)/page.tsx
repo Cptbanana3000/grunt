@@ -1,12 +1,29 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import CompressDemo from '@/components/CompressDemo'
+import BenchmarkCarousel from '@/components/BenchmarkCarousel'
+import logo from '@/app/icon1.png'
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Grunt',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Web',
+  description: 'Compress verbose AI prompts into token-efficient fragments. Save 40–70% on LLM API costs with zero loss of technical meaning.',
+  url: process.env.NEXT_PUBLIC_APP_URL || 'https://grunt.sh',
+  offers: [
+    { '@type': 'Offer', price: '0', priceCurrency: 'USD', name: 'Free' },
+    { '@type': 'Offer', price: '5', priceCurrency: 'USD', name: 'Pro', description: 'per month' },
+  ],
+}
 
 export default async function LandingPage() {
   const supabase = createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   return (
-    <main style={{
+    <main className="landing-main" style={{
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
@@ -16,6 +33,8 @@ export default async function LandingPage() {
       position: 'relative',
       overflow: 'hidden',
     }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
       {/* Grain texture overlay */}
       <div style={{
         position: 'fixed', inset: 0, opacity: 0.04, pointerEvents: 'none',
@@ -32,8 +51,9 @@ export default async function LandingPage() {
         background: 'rgba(14,13,11,0.8)',
         zIndex: 100,
       }}>
-        <span style={{ fontFamily: 'var(--serif)', fontSize: '20px', color: 'var(--stone)' }}>
-          🪨 grunt
+        <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--serif)', fontSize: '20px', color: 'var(--stone)' }}>
+          <Image src={logo} alt="grunt" width={24} height={24} style={{ borderRadius: '4px', imageRendering: 'pixelated' }} />
+          grunt
         </span>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           {user ? (
@@ -66,12 +86,12 @@ export default async function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: '1fr 1.3fr', 
-        gap: '4rem', 
-        maxWidth: '1200px', 
-        width: '100%', 
+      <div className="hero-grid" style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1.3fr',
+        gap: '4rem',
+        maxWidth: '1200px',
+        width: '100%',
         marginTop: '6rem',
         alignItems: 'center'
       }}>
@@ -99,10 +119,10 @@ export default async function LandingPage() {
             color: 'var(--text-dim)', marginBottom: '3rem',
             maxWidth: '420px',
           }}>
-            grunt rewrites bloated prompts into the smallest<br/>
-            fragment that<br/>
-            still means the same thing. <span style={{color: 'var(--green)'}}>40-60% fewer tokens,</span><br/>
-            zero<br/>
+            grunt rewrites bloated prompts into the smallest<br className="hero-br" />
+            fragment that<br className="hero-br" />
+            still means the same thing. <span style={{color: 'var(--green)'}}>40-60% fewer tokens,</span><br className="hero-br" />
+            zero<br className="hero-br" />
             loss of technical meaning.
           </p>
 
@@ -120,7 +140,7 @@ export default async function LandingPage() {
           </div>
         </div>
 
-        <div style={{ position: 'relative', width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+        <div className="hero-demo" style={{ position: 'relative', width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
           <CompressDemo />
         </div>
       </div>
@@ -149,26 +169,15 @@ export default async function LandingPage() {
           ))}
         </div>
 
-        {/* Example */}
-        <div id="how" style={{ marginTop: '5rem', textAlign: 'left' }}>
-          <div style={{ fontSize: '11px', letterSpacing: '0.12em', color: 'var(--text-faint)', textTransform: 'uppercase', marginBottom: '1rem' }}>
-            compression example
+        {/* Benchmarks */}
+        <div style={{ marginTop: '5rem', textAlign: 'left' }} id="benchmarks">
+          <div style={{ fontSize: '11px', letterSpacing: '0.12em', color: 'var(--text-faint)', textTransform: 'uppercase', marginBottom: '4px' }}>
+            real compression. real numbers.
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-            <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '1.25rem' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-faint)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '10px' }}>before</div>
-              <p style={{ fontSize: '12px', lineHeight: 1.7, color: 'var(--text-dim)' }}>
-                "Could you please help me write a function that checks whether a given number is prime? I would really appreciate it if you could also include some comments explaining how it works."
-              </p>
-            </div>
-            <div style={{ background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '1.25rem' }}>
-              <div style={{ fontSize: '10px', color: 'var(--stone-dim)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '10px' }}>after (full)</div>
-              <p style={{ fontSize: '12px', lineHeight: 1.7, color: 'var(--text)' }}>
-                "write fn: check number prime. include comments explain logic."
-              </p>
-              <div style={{ marginTop: '10px', fontSize: '11px', color: 'var(--green)' }}>↓ 68% tokens</div>
-            </div>
-          </div>
+          <p style={{ fontSize: '12px', color: 'var(--text-faint)', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+            same tool, same level (full), three different input types.
+          </p>
+          <BenchmarkCarousel />
         </div>
 
         {/* Pricing */}
@@ -176,7 +185,7 @@ export default async function LandingPage() {
           <div style={{ fontSize: '11px', letterSpacing: '0.12em', color: 'var(--text-faint)', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
             pricing
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+          <div className="two-col-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
             {[
               {
                 name: 'Free', price: '$0', sub: 'forever',
@@ -196,7 +205,10 @@ export default async function LandingPage() {
                 padding: '1.5rem',
                 textAlign: 'left',
               }}>
-                <div style={{ fontSize: '13px', color: 'var(--text-dim)', marginBottom: '6px' }}>{plan.name}</div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <span style={{ fontSize: '13px', color: 'var(--text-dim)' }}>{plan.name}</span>
+                  {plan.highlight && <span style={{ fontSize: '10px', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--stone)', background: 'var(--bg2)', border: '1px solid var(--stone-dim)', borderRadius: '999px', padding: '2px 8px' }}>recommended</span>}
+                </div>
                 <div style={{ fontFamily: 'var(--serif)', fontSize: '32px', color: 'var(--text)', marginBottom: '2px' }}>{plan.price}</div>
                 <div style={{ fontSize: '11px', color: 'var(--text-faint)', marginBottom: '1.25rem' }}>{plan.sub}</div>
                 <ul style={{ listStyle: 'none', marginBottom: '1.5rem' }}>
@@ -222,8 +234,14 @@ export default async function LandingPage() {
           </div>
         </div>
 
-        <footer style={{ marginTop: '4rem', fontSize: '12px', color: 'var(--text-faint)' }}>
-          🪨 grunt — inspired by <a href="https://github.com/JuliusBrussee/caveman" style={{ color: 'var(--stone-dim)', textDecoration: 'underline' }}>JuliusBrussee/caveman</a>
+        <footer style={{ marginTop: '4rem', fontSize: '12px', color: 'var(--text-faint)', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '12px', paddingBottom: '2rem' }}>
+          <span>
+            <Image src={logo} alt="" width={14} height={14} style={{ borderRadius: '2px', imageRendering: 'pixelated', verticalAlign: 'middle' }} /> grunt — inspired by <a href="https://github.com/JuliusBrussee/caveman" style={{ color: 'var(--stone-dim)', textDecoration: 'underline' }}>JuliusBrussee/caveman</a>
+          </span>
+          <span style={{ display: 'flex', gap: '1.25rem' }}>
+            <Link href="/privacy" style={{ color: 'var(--text-faint)' }}>privacy policy</Link>
+            <Link href="/terms" style={{ color: 'var(--text-faint)' }}>terms & conditions</Link>
+          </span>
         </footer>
       </div>
     </main>

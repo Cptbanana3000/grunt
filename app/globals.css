@@ -33,3 +33,35 @@ textarea, input { font-family: var(--mono); }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg2); }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── Mobile responsive ─────────────────────────────── */
+@media (max-width: 768px) {
+  /* Landing — hero */
+  .hero-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
+  .hero-demo { display: none !important; }
+  .hero-br { display: none; }
+
+  /* Landing — all 2-col grids (benchmarks, pricing, history) */
+  .two-col-grid { grid-template-columns: 1fr !important; }
+
+  /* Landing — main padding */
+  .landing-main { padding: 1rem !important; }
+
+  /* Dashboard — input/output panels */
+  .panels-grid { grid-template-columns: 1fr !important; }
+
+  /* Dashboard — level selector pills */
+  .level-row { flex-wrap: wrap !important; }
+
+  /* Dashboard — action row */
+  .action-row { flex-direction: column !important; align-items: flex-start !important; }
+
+  /* Dashboard — keyboard hint */
+  .desktop-hint { display: none !important; }
+
+  /* Both navs — hide email address */
+  .nav-email { display: none !important; }
+
+  /* Carousel — swap right border for bottom border when panels stack */
+  .bench-before { border-right: none !important; border-bottom: 1px solid var(--border) !important; }
+}

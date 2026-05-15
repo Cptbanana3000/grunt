@@ -12,6 +12,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url: session.url })
   } catch (e: any) {
     console.error(e)
-    return NextResponse.json({ error: e.message ?? 'checkout failed' }, { status: 500 })
+    return NextResponse.json({ error: 'checkout failed' }, { status: 500 })
   }
 }

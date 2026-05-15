@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { createAdminSupabaseClient, createServerSupabaseClient } from '@/lib/supabase-server'
 import { SYSTEM_PROMPTS, calculateSavings, estimateTokens } from '@/lib/compression-prompts'
-import { canUseLevel, isWithinDailyLimit, CompressionLevel } from '@/lib/limits'
+import { canUseLevel, PLANS, CompressionLevel } from '@/lib/limits'
 import { preprocessInput, restoreProtectedRegions } from '@/lib/preprocess'
 import { validateCompression } from '@/lib/validate'
 import { repairCompression } from '@/lib/repair'
@@ -19,15 +19,16 @@ export async function POST(req: NextRequest) {
     const { prompt, level } = await req.json() as { prompt: string; level: CompressionLevel }
 
     if (!prompt?.trim()) return NextResponse.json({ error: 'no prompt' }, { status: 400 })
+    if (prompt.length > 20000) return NextResponse.json({ error: 'prompt too large' }, { status: 400 })
     if (!['lite', 'full', 'ultra', 'wenyan'].includes(level)) {
       return NextResponse.json({ error: 'invalid level' }, { status: 400 })
     }
 
-    // Get user profile + usage
+    // Get user profile
     const admin = createAdminSupabaseClient()
     const { data: profile } = await admin
       .from('profiles')
-      .select('plan, daily_compressions, last_compression_date, total_compressions')
+      .select('plan, total_compressions')
       .eq('id', user.id)
       .single()
 
@@ -40,15 +41,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'upgrade required for this level', upgrade: true }, { status: 403 })
     }
 
-    // Reset daily count if new day
-    const today = new Date().toISOString().split('T')[0]
-    const lastDate = profile.last_compression_date
-    const usedToday = lastDate === today ? profile.daily_compressions : 0
+    // Atomically claim a slot — resets counter on new day, rejects if limit reached
+    const dailyLimit = plan === 'pro' ? 2_147_483_647 : PLANS[plan].dailyCompressions
+    const { data: slot } = await admin.rpc('claim_compression_slot', {
+      p_user_id: user.id,
+      p_daily_limit: dailyLimit,
+    })
 
-    // Check daily limit
-    if (!isWithinDailyLimit(plan, usedToday)) {
+    if (!slot?.allowed) {
       return NextResponse.json({ error: 'daily limit reached', upgrade: true }, { status: 429 })
     }
+
+    const usedToday: number = slot.used_today
 
     // Stage 1: Pre-process — extract and protect technical regions
     const { sanitized, regions } = preprocessInput(prompt)
@@ -103,17 +107,15 @@ Return only the compressed version of the text inside the XML tags. Do not answe
           compressedTokens: originalTokens,
           costPer1kCalls: '0.000',
         },
-        usedToday: usedToday + 1,
+        usedToday,
         fallback: true,
       })
     }
 
     const savings = calculateSavings(prompt, compressed)
 
-    // Update usage count
+    // Update total count (daily count already handled atomically by claim_compression_slot)
     await admin.from('profiles').update({
-      daily_compressions: usedToday + 1,
-      last_compression_date: today,
       total_compressions: (profile.total_compressions ?? 0) + 1,
     }).eq('id', user.id)
 
@@ -127,7 +129,7 @@ Return only the compressed version of the text inside the XML tags. Do not answe
       saved_tokens: savings.savedTokens,
     })
 
-    return NextResponse.json({ compressed, savings, usedToday: usedToday + 1, totalCompressions: (profile.total_compressions ?? 0) + 1 })
+    return NextResponse.json({ compressed, savings, usedToday, totalCompressions: (profile.total_compressions ?? 0) + 1 })
 
   } catch (e: any) {
     console.error(e)

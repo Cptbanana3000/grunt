@@ -14,7 +14,12 @@
       "Read(//d:/Projects/**)",
       "Bash(git grep *)",
       "Bash(git -C d:\\\\Projects\\\\grunt grep -i \"gggr\")",
-      "Bash(git check-ignore *)"
+      "Bash(git check-ignore *)",
+      "Bash(Get-ChildItem -Force)",
+      "Bash(Select-Object Name)",
+      "Bash(Remove-Item \"d:\\\\Projects\\\\grunt\\\\next.config.mjs\" -Force)",
+      "Bash(Remove-Item \"d:\\\\Projects\\\\grunt\\\\app\\\\api\\\\webhook\\\\route.ts\" -Force)",
+      "Bash(npx tsc *)"
     ]
   }
 }

@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { ValidationFailure } from './validate'
 
-const anthropic = new Anthropic()
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
 
 export async function repairCompression(
   original: string,

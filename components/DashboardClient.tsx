@@ -33,13 +33,16 @@ export default function DashboardClient({ user, profile, history: initialHistory
   const [history, setHistory] = useState(initialHistory)
   const [copied, setCopied] = useState(false)
   const [tab, setTab] = useState<'compress' | 'history'>('compress')
+  const [showUpgraded, setShowUpgraded] = useState(upgraded)
   const plan = profile.plan as 'free' | 'pro'
   const dailyLimit = PLANS[plan].dailyCompressions
   const router = useRouter()
   const supabase = createClient()
 
   useEffect(() => {
-    if (upgraded) setTimeout(() => router.replace('/dashboard'), 3000)
+    if (!upgraded) return
+    const t = setTimeout(() => setShowUpgraded(false), 3000)
+    return () => clearTimeout(t)
   }, [upgraded])
 
   async function compress() {
@@ -65,7 +68,6 @@ export default function DashboardClient({ user, profile, history: initialHistory
 
   async function signOut() {
     await supabase.auth.signOut()
-    router.refresh()
     router.push('/')
   }
 
@@ -96,7 +98,7 @@ export default function DashboardClient({ user, profile, history: initialHistory
         </div>
       </nav>
 
-      {upgraded && <div style={{ background: 'var(--green)', color: '#fff', fontSize: '13px', textAlign: 'center', padding: '10px' }}>pro unlocked. all levels available. unlimited compressions.</div>}
+      {showUpgraded && <div style={{ background: 'var(--green)', color: '#fff', fontSize: '13px', textAlign: 'center', padding: '10px' }}>pro unlocked. all levels available. unlimited compressions.</div>}
 
       <div style={{ flex: 1, maxWidth: '900px', width: '100%', margin: '0 auto', padding: '2rem 1.5rem' }}>
         {/* Usage bar */}

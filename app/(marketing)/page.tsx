@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import CompressDemo from '@/components/CompressDemo'
 import BenchmarkCarousel from '@/components/BenchmarkCarousel'
+import CheckoutButton from '@/components/CheckoutButton'
 import logo from '@/app/icon1.png'
 
 const jsonLd = {
@@ -218,17 +219,24 @@ export default async function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <Link href={plan.href} style={{
-                  display: 'block', textAlign: 'center',
-                  fontSize: '12px', padding: '9px',
-                  background: plan.highlight ? 'var(--stone)' : 'transparent',
-                  color: plan.highlight ? 'var(--bg)' : 'var(--text-dim)',
-                  border: plan.highlight ? 'none' : '1px solid var(--border)',
-                  borderRadius: 'var(--radius)',
-                  fontWeight: plan.highlight ? 500 : 400,
-                }}>
-                  {plan.cta}
-                </Link>
+                {plan.highlight ? (
+                  <CheckoutButton isLoggedIn={!!user} label={plan.cta} style={{
+                    display: 'block', textAlign: 'center', width: '100%',
+                    fontSize: '12px', padding: '9px',
+                    background: 'var(--stone)', color: 'var(--bg)',
+                    borderRadius: 'var(--radius)', fontWeight: 500,
+                  }} />
+                ) : (
+                  <Link href={plan.href} style={{
+                    display: 'block', textAlign: 'center',
+                    fontSize: '12px', padding: '9px',
+                    background: 'transparent', color: 'var(--text-dim)',
+                    border: '1px solid var(--border)',
+                    borderRadius: 'var(--radius)', fontWeight: 400,
+                  }}>
+                    {plan.cta}
+                  </Link>
+                )}
               </div>
             ))}
           </div>
